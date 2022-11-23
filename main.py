@@ -36,14 +36,18 @@ def outputData(importedFiles):
 
 
 def getJavaFiles():
-    """This function returns list of names of all the java files present in the 'java_files' folder"""
-    pass
+    """This function returns list of names of all the java files present in the 'java_files' directory"""
+    javaFiles=[]
+    allFiles = os.listdir('java_files')
+    for i in allFiles:
+        if i.endswith(".java"):
+            javaFiles.append(i)
+    return javaFiles
 
 if __name__ == '__main__':
     javaFiles = getJavaFiles()
     data = {} #containing filename as key and list of user-defined imported java files as values
 
-    for i in javaFiles:
-        data[i] = traverseJavaFile(i)
-
+    for file in javaFiles:
+        data[file] = traverseJavaFile(file)
     outputData(data)

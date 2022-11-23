@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.*;
-
 import java.io.*;
 
 public class TempFilesJUnit4Test {
