@@ -17,7 +17,9 @@ def checkImportStatement(line):
 def checkImportedFile(file):
     """Checks if the imported file is a java library file or user-defined
         Returns True if the file is user-defined else returns False"""
-    pass
+    # os.path.exists checks if the file imported is user-defined or standard library
+    file_exists = os.path.exists("/java_files/" + str(javaimportedFile))
+    return file_exists
 
 
 def traverseJavaFile(file):
