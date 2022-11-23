@@ -24,11 +24,20 @@ def checkImportedFile(file):
     return file_exists
 
 
-def traverseJavaFile(file):
+def traverseJavaFile(javaFile):
     """Traverses the given java program file and calls the checkImportStatement function to check
         import statements in the file
         Returns a list of user-defined java files imported in the program"""
-    pass
+    dependencies = []
+    with open(javaFile,"r") as file:
+        lines = file.readlines()
+        for line in lines:
+            javaDependency = checkImportStatement(line)
+            if javaDependency:
+                isudfDependency = checkImportedFile(javaDependency)
+                if isudfDependency:
+                    dependencies.append(javaDependency)
+    return dependencies
 
 
 def outputData(importedFiles):
