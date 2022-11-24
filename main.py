@@ -18,7 +18,9 @@ def checkImportedFile(file):
     """Checks if the imported file is a java library file or user-defined
         Returns True if the file is user-defined else returns False"""
     # os.path.exists checks if the file imported is user-defined or standard library
-    file_exists = os.path.exists("java_files/" + file.strip()+".java")
+    pathoffolder = "java_files/"
+    fileextension=".java"
+    file_exists = os.path.exists(pathoffolder + file.strip() + fileextension)
     return file_exists
 
 
@@ -68,7 +70,6 @@ def outputData(importedFiles):
 
 
 
-
 def getJavaFiles():
     #Riddhish
     """This function returns list of names of all the java files present in the 'java_files' directory"""
@@ -79,6 +80,8 @@ def getJavaFiles():
         if i.endswith(".java"):
             javaFiles.append(i)
     return javaFiles
+
+
 
 if __name__ == '__main__':
     javaFiles = getJavaFiles()
