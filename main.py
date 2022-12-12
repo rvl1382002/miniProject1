@@ -43,29 +43,29 @@ def traverseJavaFile(javaFile):
 
 def processData(data):
     """Receives the data in dictionary format and returns it in a format so that it can be written into csv file"""
+    print(data)
     processedData = []
-    for i in data:
-        allFiles = dict(zip(data.keys(), [False] * len(data)))
-        allFiles["Dependency"] = i
-        for j in data[i]:
-            allFiles[j] = True
-            # processedData.append()
-            # processedData[rowCount][i] = True
-        processedData.append(allFiles)
+    head=["Source","Target","Type"]
+    processedData.append(head)
+    for source in data:
+        for destination in data[source]:
+            newRecord=[]
+            newRecord.append(source)
+            newRecord.append(destination)
+            newRecord.append("Directed")
+            print(newRecord)
+            processedData.append(newRecord)
     return processedData
-
 
 
 def outputData(importedFiles):
     """Receives a dictionary containing filename as key and list of user-defined imported java files as values
         Writes the data into a csv file"""
     processedData = processData(data)
+    print(processedData)
     #importedFiles = {file1:[file2,file3,file4],file2:[file3,file4]}
     with open("java_dependencies.csv","w") as csvFile:
-        head=list(importedFiles.keys())
-        head.insert(0,"Dependency")
-        csvWriter = csv.DictWriter(csvFile,fieldnames=head)
-        csvWriter.writeheader()
+        csvWriter = csv.writer(csvFile)
         csvWriter.writerows(processedData)
 
 
