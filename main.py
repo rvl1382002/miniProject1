@@ -18,14 +18,11 @@ def checkImportedFile(file):
     """Checks if the imported file is a java library file or user-defined
         Returns True if the file is user-defined else returns False"""
     # os.path.exists checks if the file imported is user-defined or standard library
-    # pathoffolder = "java_files/"
-    # fileextension=".java"
-    # file_exists = os.path.exists(pathoffolder + file.strip() + fileextension)
-    # return file_exists
-    if file.startswith('iitb'):
-        return True
-    else:
+    expression = re.compile(r"^java\..*")
+    if re.search(expression,file):
         return False
+    else:
+        return True
 
 def traverseJavaFile(javaFile):
     """Traverses the given java program file and calls the checkImportStatement function to check
@@ -37,68 +34,61 @@ def traverseJavaFile(javaFile):
         for line in lines:
             javaDependency = checkImportStatement(line)
             if javaDependency:
+                #print(javaDependency)
                 isUdfDependency = checkImportedFile(javaDependency)
-                # Checking if the dependency is user defined
+                #Checking if the dependency is user defined
                 if isUdfDependency:
                     dependencies.append(javaDependency)
+    print(dependencies)
     return dependencies
 
 
 def processData(data):
     """Receives the data in dictionary format and returns it in a format so that it can be written into csv file"""
+    print(data)
     processedData = []
-    for i in data:
-        allFiles = dict(zip(data.keys(), [False] * len(data)))
-        allFiles["Dependency"] = i
-        for j in data[i]:
-            allFiles[j] = True
-            # processedData.append()
-            # processedData[rowCount][i] = True
-        processedData.append(allFiles)
+    head=["Source","Target","Type"]
+    processedData.append(head)
+    for source in data:
+        for destination in data[source]:
+            newRecord=[]
+            newRecord.append(source)
+            newRecord.append(destination)
+            newRecord.append("Directed")
+            print(newRecord)
+            processedData.append(newRecord)
     return processedData
-
 
 
 def outputData(importedFiles):
     """Receives a dictionary containing filename as key and list of user-defined imported java files as values
         Writes the data into a csv file"""
     processedData = processData(data)
+    print(processedData)
     #importedFiles = {file1:[file2,file3,file4],file2:[file3,file4]}
     with open("java_dependencies.csv","w") as csvFile:
-        head=list(importedFiles.keys())
-        head.insert(0,"Dependency")
-        csvWriter = csv.DictWriter(csvFile,fieldnames=head)
-        csvWriter.writeheader()
+        csvWriter = csv.writer(csvFile)
         csvWriter.writerows(processedData)
 
 
 
 def getJavaFiles():
-    #Riddhish
     """This function returns list of names of all the java files present in the 'java_files' directory"""
-    path = "C:\\Users\\anysc\\PycharmProjects\\miniProject2\\ConStore_5_0"
-    #specify the path according to file stored on user's device
+    path = r"C:\Users\hp\OneDrive\Desktop\ConStore_5_0"  #specify the path according to file stored on user's device
     # we shall store all the file names in this list
     filelist = []
     for root, dirs, files in os.walk(path):
         for file in files:
             # append the file name to the list if it is a .java file
-            if str(os.path.join(root, file)).endswith('.java'):
-                filelist.append((re.escape(os.path.join(root, file))).replace('\.','.'))
-            else:
-                pass
+            fileWithPath=os.path.join(root,file)
+            if str(fileWithPath).endswith('.java'):
+                filelist.append(fileWithPath)
     return filelist
-    # print all the file names
-    # for name in filelist:
-    #     print(name)
-
 
 
 if __name__ == '__main__':
     javaFiles = getJavaFiles()
     data = {} #containing filename as key and list of user-defined imported java files as values
-    # for file in javaFiles:
-    #     # data[file] = traverseJavaFile(file)
-    #     newfile=str(file.replace('\\\\','.'))
-    #     print(newfile.replace('C:.Users.anysc.PycharmProjects.miniProject2.ConStore_5_0.',''))
-    # outputData(data)
+    for file in javaFiles:
+        data[file] = traverseJavaFile(file)
+    outputData(data)
