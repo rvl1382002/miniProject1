@@ -39,13 +39,13 @@ def traverseJavaFile(javaFile):
                 #Checking if the dependency is user defined
                 if isUdfDependency:
                     dependencies.append(javaDependency)
-    print(dependencies)
+    # print(dependencies)
     return dependencies
 
 
 def processData(data):
     """Receives the data in dictionary format and returns it in a format so that it can be written into csv file"""
-    print(data)
+    # print(data)
     processedData = []
     head=["Source","Target","Type"]
     processedData.append(head)
@@ -55,7 +55,7 @@ def processData(data):
             newRecord.append(source)
             newRecord.append(destination)
             newRecord.append("Directed")
-            print(newRecord)
+            # print(newRecord)
             processedData.append(newRecord)
     return processedData
 
@@ -64,7 +64,7 @@ def outputData(importedFiles):
     """Receives a dictionary containing filename as key and list of user-defined imported java files as values
         Writes the data into a csv file"""
     processedData = processData(data)
-    print(processedData)
+    # print(processedData)
     #importedFiles = {file1:[file2,file3,file4],file2:[file3,file4]}
     with open("java_dependencies.csv","w") as csvFile:
         csvWriter = csv.writer(csvFile)
@@ -72,9 +72,10 @@ def outputData(importedFiles):
 
 
 
-def getJavaFiles():
+def getJavaFiles(path):
     """This function returns list of names of all the java files present in the 'java_files' directory"""
-    path = r"C:\Users\hp\OneDrive\Desktop\ConStore_5_0"  #specify the path according to file stored on user's device
+
+    #specify the path according to file stored on user's device
     # we shall store all the file names in this list
     filelist = []
     for root, dirs, files in os.walk(path):
@@ -87,8 +88,9 @@ def getJavaFiles():
 
 
 if __name__ == '__main__':
-    javaFiles = getJavaFiles()
+    path = r"C:\Users\anysc\PycharmProjects\miniProject2\ConStore_5_0"
+    javaFiles = getJavaFiles(path)
     data = {} #containing filename as key and list of user-defined imported java files as values
     for file in javaFiles:
-        data[file] = traverseJavaFile(file)
+        data[file[len(path)+1:]] = traverseJavaFile(file)
     outputData(data)
